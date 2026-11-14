@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "contas",
     "estoque",
+    "vendas",
 ]
 
 AUTH_USER_MODEL = "contas.Usuario"
