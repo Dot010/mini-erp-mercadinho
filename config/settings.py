@@ -20,12 +20,24 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework.authtoken",
     "contas",
     "estoque",
     "vendas",
 ]
 
 AUTH_USER_MODEL = "contas.Usuario"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
+    "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.ScopedRateThrottle"],
+    "DEFAULT_THROTTLE_RATES": {"login": "5/min"},
+    "EXCEPTION_HANDLER": "config.excecoes.tratar_excecoes",
+}
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
