@@ -1,0 +1,44 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import { INICIO, useAuth } from "./auth/contexto";
+import { Protegida } from "./auth/Protegida";
+import { ProvedorAuth } from "./auth/ProvedorAuth";
+import { Topo } from "./components/Topo";
+import { Caixa } from "./pages/Caixa";
+import { Estoque } from "./pages/Estoque";
+import { Login } from "./pages/Login";
+
+function Inicio() {
+  const { usuario, carregando } = useAuth();
+  if (carregando) return null;
+  return <Navigate to={usuario ? INICIO[usuario.papel] : "/login"} replace />;
+}
+
+export default function App() {
+  return (
+    <ProvedorAuth>
+      <BrowserRouter>
+        <Topo />
+        <Routes>
+          <Route path="/login" element={<Login />} />
+          <Route
+            path="/caixa"
+            element={
+              <Protegida papeis={["dono", "caixa"]}>
+                <Caixa />
+              </Protegida>
+            }
+          />
+          <Route
+            path="/estoque"
+            element={
+              <Protegida papeis={["dono", "estoquista"]}>
+                <Estoque />
+              </Protegida>
+            }
+          />
+          <Route path="*" element={<Inicio />} />
+        </Routes>
+      </BrowserRouter>
+    </ProvedorAuth>
+  );
+}
