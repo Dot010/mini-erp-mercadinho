@@ -1,0 +1,38 @@
+import { NavLink } from "react-router";
+import { useAuth } from "../auth/contexto";
+import type { Papel } from "../tipos";
+
+const LINKS: { para: string; texto: string; papeis: Papel[] }[] = [
+  { para: "/caixa", texto: "Caixa", papeis: ["dono", "caixa"] },
+  { para: "/estoque", texto: "Estoque", papeis: ["dono", "estoquista"] },
+];
+
+export function Topo() {
+  const { usuario, sair } = useAuth();
+  if (!usuario) return null;
+
+  const meus = LINKS.filter((link) => link.papeis.includes(usuario.papel));
+
+  return (
+    <header className="topo">
+      <div className="topo-esquerda">
+        <span className="marca">Balcão</span>
+        <nav aria-label="Navegação">
+          {meus.map((link) => (
+            <NavLink key={link.para} to={link.para}>
+              {link.texto}
+            </NavLink>
+          ))}
+        </nav>
+      </div>
+      <div className="topo-direita">
+        <span>
+          {usuario.first_name} <span className="fraco">({usuario.papel})</span>
+        </span>
+        <button type="button" className="link" onClick={sair}>
+          Sair
+        </button>
+      </div>
+    </header>
+  );
+}
