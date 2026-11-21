@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from contas.models import Usuario
-from contas.permissoes import DonoOuCaixa
+from contas.permissoes import DonoOuCaixa, PodeVender
 
 from .models import Venda
 from .serializers import NovaVendaSerializer, VendaSerializer
@@ -17,7 +17,7 @@ class VendaViewSet(
     viewsets.GenericViewSet,
 ):
     serializer_class = VendaSerializer
-    permission_classes = [DonoOuCaixa]
+    permission_classes = [PodeVender]
 
     def get_queryset(self):
         vendas = Venda.objects.select_related("operador").prefetch_related(

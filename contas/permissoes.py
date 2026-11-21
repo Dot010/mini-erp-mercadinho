@@ -21,3 +21,6 @@ class DonoOuEstoquista(TemPapel):
 
 class DonoOuCaixa(TemPapel):
     papeis = (Usuario.Papel.DONO, Usuario.Papel.CAIXA)
+
+class PodeVender(TemPapel):
+    papeis = (Usuario.Papel.DONO, Usuario.Papel.CAIXA, Usuario.Papel.TOTEM)

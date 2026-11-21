@@ -31,6 +31,7 @@ class Usuario(AbstractUser):
         DONO = "dono", "Dono"
         CAIXA = "caixa", "Caixa"
         ESTOQUISTA = "estoquista", "Estoquista"
+        TOTEM = "totem", "Totem"
 
     username = None
     email = models.EmailField("e-mail", unique=True)

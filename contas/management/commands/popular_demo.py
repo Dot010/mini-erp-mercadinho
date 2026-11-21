@@ -12,6 +12,7 @@ EQUIPE = [
     ("dono@mercadinho.com", "Jonathan", Usuario.Papel.DONO),
     ("bia@mercadinho.com", "Bia", Usuario.Papel.CAIXA),
     ("carlos@mercadinho.com", "Carlos", Usuario.Papel.ESTOQUISTA),
+    ("totem@mercadinho.com", "Totem 1", Usuario.Papel.TOTEM),
 ]
 
 PRODUTOS = [
