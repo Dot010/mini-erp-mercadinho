@@ -24,3 +24,7 @@ class DonoOuCaixa(TemPapel):
 
 class PodeVender(TemPapel):
     papeis = (Usuario.Papel.DONO, Usuario.Papel.CAIXA, Usuario.Papel.TOTEM)
+
+
+class SoTotem(TemPapel):
+    papeis = (Usuario.Papel.TOTEM,)
