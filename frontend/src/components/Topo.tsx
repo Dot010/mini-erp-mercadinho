@@ -9,7 +9,7 @@ const LINKS: { para: string; texto: string; papeis: Papel[] }[] = [
 
 export function Topo() {
   const { usuario, sair } = useAuth();
-  if (!usuario) return null;
+  if (!usuario || usuario.papel === "totem") return null;
 
   const meus = LINKS.filter((link) => link.papeis.includes(usuario.papel));
 

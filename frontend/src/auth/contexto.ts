@@ -21,4 +21,5 @@ export const INICIO: Record<Papel, string> = {
   dono: "/caixa",
   caixa: "/caixa",
   estoquista: "/estoque",
+  totem: "/totem",
 };

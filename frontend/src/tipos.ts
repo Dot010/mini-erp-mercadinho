@@ -1,4 +1,4 @@
-export type Papel = "dono" | "caixa" | "estoquista";
+export type Papel = "dono" | "caixa" | "estoquista" | "totem";
 
 export type Usuario = {
   id: number;
@@ -14,6 +14,7 @@ export type Produto = {
   preco: string;
   estoque: number;
   ativo: boolean;
+  restrito: boolean;
 };
 
 export type Pagamento = "dinheiro" | "cartao" | "pix";
@@ -33,4 +34,13 @@ export type Venda = {
   total: string;
   criada_em: string;
   itens: ItemVenda[];
+};
+
+export type Chamado = {
+id: number;
+totem: string;
+motivo: string,
+status: "aberto" | "liberado" | "usado";
+liberado_por: string | null;
+criado_em: string;
 };
