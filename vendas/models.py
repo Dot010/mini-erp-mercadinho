@@ -54,3 +54,37 @@ class ItemVenda(models.Model):
     @property
     def subtotal(self):
         return self.preco_unitario * self.quantidade
+
+
+class Chamado(models.Model):
+    class Status(models.TextChoices):
+        ABERTO = "aberto", "Aberto"
+        LIBERADO = "liberado", "Liberado"
+        USADO = "usado", "Usado"
+
+    totem = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name="chamados",
+    )
+    motivo = models.CharField(max_length=200)
+    status = models.CharField(
+        max_length=8,
+        choices=Status.choices,
+        default=Status.ABERTO,
+    )
+    liberado_por = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name="chamados_liberados",
+    )
+    criado_em = models.DateTimeField(auto_now_add=True)
+    liberado_em = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["criado_em"]
+
+    def __str__(self):
+        return f"Chamado #{self.pk} ({self.get_status_display()})"
