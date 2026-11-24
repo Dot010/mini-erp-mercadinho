@@ -6,7 +6,7 @@ from .models import Movimentacao, Produto
 class ProdutoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Produto
-        fields = ["id", "nome", "codigo_barras", "preco", "estoque", "ativo"]
+        fields = ["id", "nome", "codigo_barras", "preco", "estoque", "ativo", "restrito"]
         read_only_fields = ["estoque"]
 
 

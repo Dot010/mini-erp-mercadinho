@@ -18,6 +18,11 @@ class Produto(models.Model):
     estoque = models.PositiveIntegerField(default=0, editable=False)
     ativo = models.BooleanField(default=True)
     criado_em = models.DateTimeField(auto_now_add=True)
+    restrito = models.BooleanField(
+        "só para maiores de 18",
+        default=False,
+        help_text="No totem, precisa da conferência de um funcionário.",
+    )
 
     class Meta:
         ordering = ["nome"]
