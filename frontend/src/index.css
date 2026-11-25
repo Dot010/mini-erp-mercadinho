@@ -187,6 +187,12 @@ select {
 .painel-form h2 { margin: 0; font-size: 18px; }
 .painel-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fraco); }
 
+.chamados { border: 2px solid var(--tinta); background: #ffffff; padding: 12px 14px; }
+.chamados h2 { margin: 0 0 8px; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.chamados ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.chamados li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.chamados .botao { min-height: 44px; }
+
 @media (max-width: 640px) {
   .topo, .caixa-itens, .caixa-pagamento, .pagina { padding-left: 16px; padding-right: 16px; }
   .caixa-pagamento { border-left: 0; border-top: 1px solid var(--linha); }
