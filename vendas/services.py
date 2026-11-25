@@ -65,14 +65,16 @@ def cancelar_venda(venda, usuario):
     venda.save(update_fields=["status"])
     return venda
 
-
 @transaction.atomic
 def abrir_chamado(totem, motivo):
-    pendente = totem.chamados.exclude(status=Chamado.Status.USADO).first()
-    if pendente:
-        return pendente
-    return Chamado.objects.create(totem=totem, motivo=motivo)
+    aberto = totem.chamados.filter(status=Chamado.Status.ABERTO).first()
+    if aberto:
+        return aberto
 
+    totem.chamados.filter(status=Chamado.Status.LIBERADO).update(
+        status=Chamado.Status.USADO
+    )
+    return Chamado.objects.create(totem=totem, motivo=motivo)
 
 @transaction.atomic
 def liberar_chamado(chamado, funcionario):
@@ -96,7 +98,7 @@ def conferir_totem(operador, itens, chamado):
     if not any(produto.restrito for produto, _ in itens):
         return
     if chamado is None:
-        raise ValidationError("Tem produtos para maioes de 18 anos: Chame um atendente.")
+        raise ValidationError("Tem produtos para maiores de 18 anos: Chame um atendente.")
 
 
     chamado = Chamado.objects.select_for_update().get(pk=chamado.pk)
