@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "contas",
     "estoque",
     "vendas",
+    "relatorios",
 ]
 
 AUTH_USER_MODEL = "contas.Usuario"
