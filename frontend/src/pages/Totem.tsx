@@ -10,7 +10,7 @@ import {
   type Item,
 } from "../carrinho";
 import { paraCentavos, reais } from "../dinheiro";
-import type {Chamado, Produto } from "../tipos";
+import type { Chamado, Produto, Venda } from "../tipos";
 
 export function Totem() {
   const { sair } = useAuth();
@@ -21,10 +21,13 @@ export function Totem() {
   const [erro, setErro] = useState("");
   const campo = useRef<HTMLInputElement>(null);
   const [chamado, setChamado] = useState<Chamado | null>(null);
+  const [pago, setPago] = useState<Venda | null>(null);
 
-  async function chamarAtendente(motivo:string) {
-    try{
-      setChamado(await api<Chamado>("/chamados/", { metodo: "POST", corpo: { motivo }}));
+  async function chamarAtendente(motivo: string) {
+    try {
+      setChamado(
+        await api<Chamado>("/chamados/", { metodo: "POST", corpo: { motivo } }),
+      );
     } catch (e) {
       setErro((e as Error).message);
     }
@@ -69,15 +72,29 @@ export function Totem() {
     }
     campo.current?.focus();
   }
- useEffect(() => {
+  useEffect(() => {
     if (chamado?.status !== "aberto") return;
     const relogio = setInterval(() => {
-      api<Chamado>(`/chamados/${chamado.id}/`).then(setChamado).catch(() => {});
+      api<Chamado>(`/chamados/${chamado.id}/`)
+        .then(setChamado)
+        .catch(() => {});
     }, 3000);
     return () => clearInterval(relogio);
   }, [chamado]);
-    useEffect(() => {
-      function atalho(evento: KeyboardEvent) {
+
+  useEffect(() => {
+    if (!pago) return;
+    const espera = setTimeout(() => {
+      setPago(null);
+      setUltimo(null);
+      setChamado(null);
+      mudarItens([]);
+    }, 6000);
+    return () => clearTimeout(espera);
+  }, [pago]);
+
+  useEffect(() => {
+    function atalho(evento: KeyboardEvent) {
       if (
         evento.ctrlKey &&
         evento.shiftKey &&
@@ -91,8 +108,41 @@ export function Totem() {
     return () => window.removeEventListener("keydown", atalho);
   }, [sair]);
   const precisaConferir = itens.some((item) => item.produto.restrito);
-  const liberado = chamado?.status === "liberado"
+  const liberado = chamado?.status === "liberado";
+  const podePagar = itens.length > 0 && (!precisaConferir || liberado);
 
+  async function pagar() {
+    setErro("");
+    try {
+      const venda = await api<Venda>("/vendas/", {
+        metodo: "POST",
+        corpo: {
+          pagamento: "pix",
+          chamado: precisaConferir ? chamado?.id : null,
+          itens: itens.map((item) => ({
+            produto: item.produto.codigo_barras,
+            quantidade: item.quantidade,
+          })),
+        },
+      });
+      setPago(venda);
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+  }
+
+  if (pago) {
+    return (
+      <main className="totem totem-fim" aria-live="polite">
+        <p className="totem-grande">Obrigado!</p>
+        <p>
+          Pagamento de{" "}
+          <b className="mono">R$ {reais(paraCentavos(pago.total))}</b> aprovado.
+        </p>
+        <p className="fraco">Pode levar suas compras. Volte sempre.</p>
+      </main>
+    );
+  }
   return (
     <main className="totem">
       <header className="totem-topo">
@@ -100,13 +150,14 @@ export function Totem() {
           Mercadinho <span className="fraco">. passe seus produtos</span>
         </span>
         <button
-        type="button"
-        className="botao claro"
-        disabled={chamado?.status === "aberto"}
-        onClick={() => chamarAtendente("Ajuda no totem")}
+          type="button"
+          className="botao claro"
+          disabled={chamado?.status === "aberto"}
+          onClick={() => chamarAtendente("Ajuda no totem")}
         >
-          {chamado?.status === "aberto" ? "Atendente a caminho" : "Chamar atendente"} 
-          
+          {chamado?.status === "aberto"
+            ? "Atendente a caminho"
+            : "Chamar atendente"}
         </button>
       </header>
 
@@ -199,9 +250,10 @@ export function Totem() {
             {erro}
           </p>
         )}
-                {precisaConferir && !liberado && (
+        {precisaConferir && !liberado && (
           <p role="status" className="alerta">
-            Um funcionário foi chamado para conferir. O pagamento libera em seguida.
+            Um funcionário foi chamado para conferir. O pagamento libera em
+            seguida.
           </p>
         )}
         {liberado && (
@@ -209,15 +261,28 @@ export function Totem() {
             Liberado por {chamado?.liberado_por}. Pode pagar.
           </p>
         )}
-        <div className="etiqueta">
-          <span className="forte">
-            TOTAL . {quantidadeDeItens(itens)} itens
-          </span>
-          <span className="etiqueta-valor mono">
-            <span>R$</span>
-            {reais(totalEmCentavos(itens))}
-          </span>
+        <div className="totem-pagar">
+          <div className="etiqueta">
+            <span className="forte">
+              TOTAL · {quantidadeDeItens(itens)} itens
+            </span>
+            <span className="etiqueta-valor mono">
+              <span>R$</span>
+              {reais(totalEmCentavos(itens))}
+            </span>
+          </div>
+          <button
+            type="button"
+            className="botao enorme"
+            disabled={!podePagar}
+            onClick={pagar}
+          >
+            Pagar com Pix
+          </button>
         </div>
+        <p className="fraco pequeno">
+          Pix simulado: o pagamento de verdade fica para o futuro.
+        </p>
       </section>
     </main>
   );
