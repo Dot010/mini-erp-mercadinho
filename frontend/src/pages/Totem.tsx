@@ -10,7 +10,7 @@ import {
   type Item,
 } from "../carrinho";
 import { paraCentavos, reais } from "../dinheiro";
-import type { Produto } from "../tipos";
+import type {Chamado, Produto } from "../tipos";
 
 export function Totem() {
   const { sair } = useAuth();
@@ -20,7 +20,15 @@ export function Totem() {
   const [ultimo, setUltimo] = useState<Produto | null>(null);
   const [erro, setErro] = useState("");
   const campo = useRef<HTMLInputElement>(null);
+  const [chamado, setChamado] = useState<Chamado | null>(null);
 
+  async function chamarAtendente(motivo:string) {
+    try{
+      setChamado(await api<Chamado>("/chamados/", { metodo: "POST", corpo: { motivo }}));
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+  }
   function mudarItens(novos: Item[]) {
     itensAgora.current = novos;
     setItens(novos);
@@ -40,6 +48,7 @@ export function Totem() {
       const produto = lidos[0];
       mudarItens(adicionar(itensAgora.current, produto, 1));
       setUltimo(produto);
+      if (produto.restrito && !chamado) await chamarAtendente(produto.nome);
     } catch (e) {
       setErro((e as Error).message);
     }
@@ -60,8 +69,15 @@ export function Totem() {
     }
     campo.current?.focus();
   }
-  useEffect(() => {
-    function atalho(evento: KeyboardEvent) {
+ useEffect(() => {
+    if (chamado?.status !== "aberto") return;
+    const relogio = setInterval(() => {
+      api<Chamado>(`/chamados/${chamado.id}/`).then(setChamado).catch(() => {});
+    }, 3000);
+    return () => clearInterval(relogio);
+  }, [chamado]);
+    useEffect(() => {
+      function atalho(evento: KeyboardEvent) {
       if (
         evento.ctrlKey &&
         evento.shiftKey &&
@@ -74,6 +90,8 @@ export function Totem() {
     window.addEventListener("keydown", atalho);
     return () => window.removeEventListener("keydown", atalho);
   }, [sair]);
+  const precisaConferir = itens.some((item) => item.produto.restrito);
+  const liberado = chamado?.status === "liberado"
 
   return (
     <main className="totem">
@@ -81,6 +99,15 @@ export function Totem() {
         <span className="marca">
           Mercadinho <span className="fraco">. passe seus produtos</span>
         </span>
+        <button
+        type="button"
+        className="botao claro"
+        disabled={chamado?.status === "aberto"}
+        onClick={() => chamarAtendente("Ajuda no totem")}
+        >
+          {chamado?.status === "aberto" ? "Atendente a caminho" : "Chamar atendente"} 
+          
+        </button>
       </header>
 
       <form onSubmit={bipar} className="totem-leitor">
@@ -143,7 +170,7 @@ export function Totem() {
                 </td>
                 <td>
                   {item.produto.nome}
-                  {item.produto.restrito && (
+                  {item.produto.restrito && !liberado && (
                     <span className="aviso-18">
                       precisa da conferência de um funcionário
                     </span>
@@ -170,6 +197,16 @@ export function Totem() {
         {erro && (
           <p role="alert" className="alerta">
             {erro}
+          </p>
+        )}
+                {precisaConferir && !liberado && (
+          <p role="status" className="alerta">
+            Um funcionário foi chamado para conferir. O pagamento libera em seguida.
+          </p>
+        )}
+        {liberado && (
+          <p role="status" className="ok">
+            Liberado por {chamado?.liberado_por}. Pode pagar.
           </p>
         )}
         <div className="etiqueta">

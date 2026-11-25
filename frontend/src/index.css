@@ -212,6 +212,7 @@ select {
 .totem-rodape .etiqueta-valor { font-size: 48px; margin: 0; }
 .qtd { display: inline-flex; align-items: center; gap: 10px; }
 .qtd button { width: 44px; height: 44px; font-size: 22px; border: 1px solid var(--linha); background: #ffffff; border-radius: 4px; cursor: pointer; }
+.ok { margin: 0; padding: 10px 12px; border-left: 4px solid #1f6b47; background: #e6f2ea; color: #14492f; }
 @media (max-width: 640px) {
   .topo, .caixa-itens, .caixa-pagamento, .pagina { padding-left: 16px; padding-right: 16px; }
   .caixa-pagamento { border-left: 0; border-top: 1px solid var(--linha); }
