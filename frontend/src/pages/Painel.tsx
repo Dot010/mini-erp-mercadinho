@@ -30,7 +30,8 @@ export function Painel() {
       </main>
     );
   }
-
+  const maiorQuantidade = Math.max(...dados.mais_vendidos.map((item) => item.quantidade), 1);
+  const totalCentavos = paraCentavos(dados.total) || 1;
   return (
     <main className="pagina painel">
       <div className="pagina-topo">
@@ -58,28 +59,28 @@ export function Painel() {
       {dados.mais_vendidos.length === 0 ? (
         <p className="vazio">Nenhuma venda ainda hoje.</p>
       ) : (
-        <table className="tabela">
-          <thead>
-           <tr><th>Produto</th><th className="num">Unidades</th></tr>
-          </thead>
-          <tbody>
-            {dados.mais_vendidos.map((item) => (
-              <tr key={item.nome}>
-                <td>{item.nome}</td>
-                <td className="num mono">{item.quantidade}</td>
-          
-              </tr>
-            ))}
-          </tbody>
-        </table>
+              <ul className="barras">
+          {dados.mais_vendidos.map((item) => (
+            <li key={item.nome}>
+              <span>{item.nome}</span>
+              <span className="barras-trilho">
+                <span className="barras-cheia" style={{ width: `${(item.quantidade / maiorQuantidade) * 100}%` }} />
+              </span>
+              <span className="mono num">{item.quantidade} un.</span>
+            </li>
+          ))}
+        </ul>
       )}
 
       <h2>Por pagamento</h2>
-      <ul className="painel-lista">
+         <ul className="barras">
         {dados.por_pagamento.map((linha) => (
           <li key={linha.pagamento}>
             <span>{NOME_PAGAMENTO[linha.pagamento]} ({linha.vendas})</span>
-            <span className="mono">R$ {reais(paraCentavos(linha.total))}</span>
+            <span className="barras-trilho">
+              <span className="barras-cheia" style={{ width: `${(paraCentavos(linha.total) / totalCentavos) * 100}%` }} />
+            </span>
+            <span className="mono num">R$ {reais(paraCentavos(linha.total))}</span>
           </li>
         ))}
       </ul>
