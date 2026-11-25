@@ -1,15 +1,187 @@
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import { api } from "../api";
 import { useAuth } from "../auth/contexto";
+import {
+  adicionar,
+  quantidadeDeItens,
+  remover,
+  subtotal,
+  totalEmCentavos,
+  type Item,
+} from "../carrinho";
+import { paraCentavos, reais } from "../dinheiro";
+import type { Produto } from "../tipos";
 
 export function Totem() {
   const { sair } = useAuth();
+  const [codigo, setCodigo] = useState("");
+  const [itens, setItens] = useState<Item[]>([]);
+  const itensAgora = useRef<Item[]>([]);
+  const [ultimo, setUltimo] = useState<Produto | null>(null);
+  const [erro, setErro] = useState("");
+  const campo = useRef<HTMLInputElement>(null);
+
+  function mudarItens(novos: Item[]) {
+    itensAgora.current = novos;
+    setItens(novos);
+  }
+
+  async function bipar(evento: FormEvent) {
+    evento.preventDefault();
+    const lido = codigo;
+    setCodigo("");
+    setErro("");
+    try {
+      const lidos = await api<Produto[]>(
+        `/produtos/?codigo=${encodeURIComponent(lido)}`,
+      );
+      if (lidos.length === 0)
+        throw new Error("Não achamos este produto. Chame um atendente.");
+      const produto = lidos[0];
+      mudarItens(adicionar(itensAgora.current, produto, 1));
+      setUltimo(produto);
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+    campo.current?.focus();
+  }
+
+  function mudarQuantidade(item: Item, quanto: number) {
+    setErro("");
+    if (item.quantidade + quanto <= 0) {
+      mudarItens(remover(itensAgora.current, item.produto.id));
+      campo.current?.focus();
+      return;
+    }
+    try {
+      mudarItens(adicionar(itensAgora.current, item.produto, quanto));
+    } catch (e) {
+      setErro((e as Error).message);
+    }
+    campo.current?.focus();
+  }
+  useEffect(() => {
+    function atalho(evento: KeyboardEvent) {
+      if (
+        evento.ctrlKey &&
+        evento.shiftKey &&
+        evento.key.toLowerCase() === "e"
+      ) {
+        evento.preventDefault();
+        sair();
+      }
+    }
+    window.addEventListener("keydown", atalho);
+    return () => window.removeEventListener("keydown", atalho);
+  }, [sair]);
 
   return (
     <main className="totem">
-      <h1>Totem</h1>
-      <p>Passe seus produtos.</p>
-      <button type="button" className="link" onClick={sair}>
-        Encerrar totem
-      </button>
+      <header className="totem-topo">
+        <span className="marca">
+          Mercadinho <span className="fraco">. passe seus produtos</span>
+        </span>
+      </header>
+
+      <form onSubmit={bipar} className="totem-leitor">
+        <label>
+          <span className="so-leitor">Código de barras</span>
+          <input
+            ref={campo}
+            autoFocus
+            required
+            inputMode="numeric"
+            placeholder="Passe o código de barras no leitor"
+            value={codigo}
+            onChange={(e) => setCodigo(e.target.value.trim())}
+          />
+        </label>
+      </form>
+
+      <section
+        className="totem-ultimo"
+        aria-label="Último item"
+        aria-live="polite"
+      >
+        {ultimo ? (
+          <>
+            <span className="fraco">
+              Confira se é este o produto na sua mão:
+            </span>
+            <span className="totem-grande">{ultimo.nome}</span>
+            <span className="mono">R$ {reais(paraCentavos(ultimo.preco))}</span>
+          </>
+        ) : (
+          <span className="totem-grande fraco">Passe o primeiro produto</span>
+        )}
+      </section>
+
+      <section className="totem-lista" aria-label="Sua compra">
+        <table className="tabela">
+          <caption>Sua compra</caption>
+          <tbody>
+            {itens.map((item) => (
+              <tr key={item.produto.id}>
+                <td>
+                  <div className="qtd">
+                    <button
+                      type="button"
+                      aria-label={`Um a menos de ${item.produto.nome}`}
+                      onClick={() => mudarQuantidade(item, -1)}
+                    >
+                      −
+                    </button>
+                    <span className="mono">{item.quantidade}</span>
+                    <button
+                      type="button"
+                      aria-label={`Um a mais de ${item.produto.nome}`}
+                      onClick={() => mudarQuantidade(item, 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  {item.produto.nome}
+                  {item.produto.restrito && (
+                    <span className="aviso-18">
+                      precisa da conferência de um funcionário
+                    </span>
+                  )}
+                </td>
+                <td className="num mono">{reais(subtotal(item))}</td>
+                <td>
+                  <button
+                    type="button"
+                    className="remover"
+                    aria-label={`Tirar ${item.produto.nome}`}
+                    onClick={() => mudarItens(remover(itens, item.produto.id))}
+                  >
+                    ×
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+
+      <section className="totem-rodape">
+        {erro && (
+          <p role="alert" className="alerta">
+            {erro}
+          </p>
+        )}
+        <div className="etiqueta">
+          <span className="forte">
+            TOTAL . {quantidadeDeItens(itens)} itens
+          </span>
+          <span className="etiqueta-valor mono">
+            <span>R$</span>
+            {reais(totalEmCentavos(itens))}
+          </span>
+        </div>
+      </section>
     </main>
   );
 }
