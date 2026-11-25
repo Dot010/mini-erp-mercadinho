@@ -18,7 +18,7 @@ export function useAuth() {
 
 
 export const INICIO: Record<Papel, string> = {
-  dono: "/caixa",
+  dono: "/painel",
   caixa: "/caixa",
   estoquista: "/estoque",
   totem: "/totem",

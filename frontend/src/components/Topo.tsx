@@ -3,6 +3,7 @@ import { useAuth } from "../auth/contexto";
 import type { Papel } from "../tipos";
 
 const LINKS: { para: string; texto: string; papeis: Papel[] }[] = [
+  { para: "/painel", texto: "Painel", papeis: ["dono"] },
   { para: "/caixa", texto: "Caixa", papeis: ["dono", "caixa"] },
   { para: "/estoque", texto: "Estoque", papeis: ["dono", "estoquista"] },
 ];

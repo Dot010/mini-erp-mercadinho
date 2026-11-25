@@ -7,6 +7,7 @@ import { Caixa } from "./pages/Caixa";
 import { Estoque } from "./pages/Estoque";
 import { Login } from "./pages/Login";
 import { Totem } from "./pages/Totem";
+import { Painel } from "./pages/Painel";
 
 function Inicio() {
   const { usuario, carregando } = useAuth();
@@ -20,6 +21,14 @@ export default function App() {
       <BrowserRouter>
         <Topo />
         <Routes>
+          <Route
+  path="/painel"
+  element={
+    <Protegida papeis={["dono"]}>
+      <Painel />
+    </Protegida>
+  }
+/>
           <Route
           path="/totem"
           element={

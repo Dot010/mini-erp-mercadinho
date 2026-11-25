@@ -37,10 +37,26 @@ export type Venda = {
 };
 
 export type Chamado = {
-id: number;
-totem: string;
-motivo: string,
-status: "aberto" | "liberado" | "usado";
-liberado_por: string | null;
-criado_em: string;
+  id: number;
+  totem: string;
+  motivo: string;
+  status: "aberto" | "liberado" | "usado";
+  liberado_por: string | null;
+  criado_em: string;
+};
+
+export type Resumo = {
+  inicio: string;
+  fim: string;
+  total: string;
+  vendas: number;
+  ticket_medio: string;
+  por_pagamento: { pagamento: Pagamento; vendas: number; total: string }[];
+  mais_vendidos: { nome: string; quantidade: number }[];
+};
+
+export const NOME_PAGAMENTO: Record<Pagamento, string> = {
+  dinheiro: "Dinheiro",
+  cartao: "Cartão",
+  pix: "Pix",
 };
