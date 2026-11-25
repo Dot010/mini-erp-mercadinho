@@ -1,7 +1,7 @@
 from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied, ValidationError
 
-from .models import ItemVenda, Venda
+from .models import Chamado, ItemVenda, Venda
 from .services import cancelar_venda
 
 
@@ -41,3 +41,10 @@ class VendaAdmin(admin.ModelAdmin):
                 self.message_user(request, f"{venda} cancelada.")
             except (PermissionDenied, ValidationError) as erro:
                 self.message_user(request, f"{venda}: {erro.args[0]}", messages.ERROR)
+
+
+@admin.register(Chamado)
+class ChamadoAdmin(admin.ModelAdmin):
+    list_display = ["__str__", "totem", "motivo", "status", "liberado_por", "criado_em"]
+    list_filter = ["status"]
+    readonly_fields = ["totem", "motivo", "status", "liberado_por", "liberado_em"]

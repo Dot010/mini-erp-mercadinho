@@ -8,6 +8,7 @@ import {
   totalEmCentavos,
   type Item,
 } from "../carrinho";
+import { ChamadosTotem } from "../components/ChamadosTotem";
 import { paraCentavos, reais } from "../dinheiro";
 import type { Pagamento, Produto, Venda } from "../tipos";
 
@@ -21,7 +22,7 @@ export function Caixa() {
   const [codigo, setCodigo] = useState("");
   const [quantidade, setQuantidade] = useState(1);
   const [itens, setItens] = useState<Item[]>([]);
-  // Cópia que muda na hora: o leitor bipa mais rápido do que a tela redesenha.
+
   const itensAgora = useRef<Item[]>([]);
   const [pagamento, setPagamento] = useState<Pagamento>("pix");
   const [erro, setErro] = useState("");
@@ -175,6 +176,7 @@ export function Caixa() {
       </section>
 
       <aside className="caixa-pagamento" aria-label="Pagamento">
+        <ChamadosTotem />
         <div className="etiqueta">
           <div className="etiqueta-topo">
             <span>TOTAL</span>

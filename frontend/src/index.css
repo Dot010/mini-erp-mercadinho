@@ -187,6 +187,35 @@ select {
 .painel-form h2 { margin: 0; font-size: 18px; }
 .painel-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fraco); }
 
+.chamados { border: 2px solid var(--tinta); background: #ffffff; padding: 12px 14px; }
+.chamados h2 { margin: 0 0 8px; font-size: 14px; letter-spacing: 0.04em; text-transform: uppercase; }
+.chamados ul { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.chamados li { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.chamados .botao { min-height: 44px; }
+/* Totem */
+.totem { min-height: 100vh; display: flex; flex-direction: column; max-width: 900px; margin: 0 auto; }
+.totem-topo { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding: 20px 32px; border-bottom: 1px solid var(--linha); }
+.totem-topo .marca { font-size: 22px; }
+.totem-topo .marca .fraco { font-weight: 400; }
+.totem-topo .botao { min-height: 56px; font-size: 17px; }
+.totem-leitor { padding: 16px 32px 0; }
+.totem-leitor input { width: 100%; min-height: 56px; font-family: var(--mono); font-size: 20px; }
+.totem-ultimo { padding: 20px 32px 24px; display: flex; flex-direction: column; gap: 4px; border-bottom: 1px solid var(--linha); }
+.totem-ultimo .mono { font-size: 22px; }
+.totem-grande { font-weight: 700; font-size: 40px; line-height: 1.1; letter-spacing: -0.01em; }
+.totem-lista { flex: 1; padding: 8px 32px; }
+.totem-lista .tabela { min-width: 0; font-size: 19px; }
+.totem-lista caption { text-align: left; font-size: 14px; color: var(--fraco); padding: 12px 0 8px; }
+.aviso-18 { display: block; font-size: 15px; color: var(--vermelho-texto); }
+.totem-rodape { padding: 20px 32px 24px; display: flex; flex-direction: column; gap: 14px; border-top: 1px solid var(--linha); background: var(--fundo); }
+.totem-rodape .etiqueta { display: flex; flex-direction: column; justify-content: center; }
+.totem-rodape .etiqueta-valor { font-size: 48px; margin: 0; }
+.qtd { display: inline-flex; align-items: center; gap: 10px; }
+.qtd button { width: 44px; height: 44px; font-size: 22px; border: 1px solid var(--linha); background: #ffffff; border-radius: 4px; cursor: pointer; }
+.ok { margin: 0; padding: 10px 12px; border-left: 4px solid #1f6b47; background: #e6f2ea; color: #14492f; }
+.totem-pagar { display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch; }
+.botao.enorme { flex: 1; min-height: 88px; font-size: 22px; }
+.totem-fim { align-items: center; justify-content: center; text-align: center; gap: 12px; font-size: 20px; padding: 32px; }
 @media (max-width: 640px) {
   .topo, .caixa-itens, .caixa-pagamento, .pagina { padding-left: 16px; padding-right: 16px; }
   .caixa-pagamento { border-left: 0; border-top: 1px solid var(--linha); }

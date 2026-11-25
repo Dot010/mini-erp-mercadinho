@@ -6,8 +6,8 @@ from .services import registrar_movimentacao
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ["nome", "codigo_barras", "preco", "estoque", "ativo"]
-    list_filter = ["ativo"]
+    list_display = ["nome", "codigo_barras", "preco", "estoque", "ativo", "restrito"]
+    list_filter = ["ativo", "restrito"]
     search_fields = ["nome", "codigo_barras"]
     readonly_fields = ["estoque"]
 
