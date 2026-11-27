@@ -129,3 +129,28 @@ class RelatorioTest(APITestCase):
         self.assertEqual(relatorio.status, Relatorio.Status.PRONTO)
         self.assertEqual(relatorio.dados["total"], "55.80")
         self.assertIsNotNone(relatorio.terminado_em)
+
+
+
+    def test_csv_de_relatorio_pronto(self):
+        registrar_venda(self.bia, [(self.arroz, 2)], "pix")
+        relatorio = Relatorio.objects.create(
+            pedido_por=self.dono, inicio=timezone.localdate(), fim=timezone.localdate()
+        )
+        gerar_relatorio(relatorio.id)
+
+        resposta = self.client.get(reverse("relatorio-csv", args=[relatorio.id]))
+
+        self.assertEqual(resposta.status_code, status.HTTP_200_OK)
+        conteudo = resposta.content.decode("utf-8-sig")
+        self.assertIn("Total vendido;55,80", conteudo)
+        self.assertIn("Arroz 5kg;2", conteudo)
+
+    def test_csv_de_relatorio_pendente_da_409(self):
+        relatorio = Relatorio.objects.create(
+            pedido_por=self.dono, inicio=timezone.localdate(), fim=timezone.localdate()
+        )
+
+        resposta = self.client.get(reverse("relatorio-csv", args=[relatorio.id]))
+
+        self.assertEqual(resposta.status_code, status.HTTP_409_CONFLICT)
