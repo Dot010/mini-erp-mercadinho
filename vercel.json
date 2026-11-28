@@ -6,7 +6,8 @@
       "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
     },
     "api": {
-      "root": "./"
+      "root": "./",
+      "entrypoint": "config.wsgi:application"
     }
   },
   "rewrites": [
