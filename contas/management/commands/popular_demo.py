@@ -1,3 +1,4 @@
+import os
 from decimal import Decimal
 
 from django.conf import settings
@@ -16,24 +17,25 @@ EQUIPE = [
 ]
 
 PRODUTOS = [
-    ("Arroz 5kg", "7890000000001", "27.90", 12),
-    ("Feijão 1kg", "7890000000002", "8.49", 0),
-    ("Óleo de soja 900ml", "7890000000003", "7.49", 4),
-    ("Café 500g", "7890000000004", "18.90", 24),
-    ("Leite integral 1L", "7890000000005", "5.29", 36),
+    ("Arroz 5kg", "7890000000001", "27.90", 12, False),
+    ("Feijão 1kg", "7890000000002", "8.49", 0, False),
+    ("Óleo de soja 900ml", "7890000000003", "7.49", 4, False),
+    ("Café 500g", "7890000000004", "18.90", 24, False),
+    ("Leite integral 1L", "7890000000005", "5.29", 36, False),
+    ("Cerveja lata 350ml", "7890000000006", "4.99", 48, True),
 ]
 
 
 class Command(BaseCommand):
-    help = "Cria a equipe e os produtos de exemplo (só para o seu PC)."
+    help = "Cria a equipe e os produtos de exemplo (no seu PC ou na demo)."
 
     def add_arguments(self, parser):
-        parser.add_argument("--senha", required=True, help="Senha dos 3 usuários")
+        parser.add_argument("--senha", required=True, help="Senha dos 4 usuários")
 
     @transaction.atomic
     def handle(self, *args, **options):
-        if not settings.DEBUG:
-            raise CommandError("Só roda com DEBUG=True. Nunca em produção.")
+        if not settings.DEBUG and os.getenv("PERMITIR_DEMO") != "True":
+            raise CommandError("Só roda com DEBUG=True ou PERMITIR_DEMO=True.")
 
         senha = options["senha"]
         dono = None
@@ -43,15 +45,17 @@ class Command(BaseCommand):
             )
             if criado:
                 usuario.set_password(senha)
-                usuario.is_staff = papel == Usuario.Papel.DONO
-                usuario.is_superuser = papel == Usuario.Papel.DONO
+                eh_admin = papel == Usuario.Papel.DONO and settings.DEBUG
+                usuario.is_staff = eh_admin
+                usuario.is_superuser = eh_admin
                 usuario.save()
             if papel == Usuario.Papel.DONO:
                 dono = usuario
 
-        for nome, codigo, preco, quantidade in PRODUTOS:
+        for nome, codigo, preco, quantidade, restrito in PRODUTOS:
             produto, criado = Produto.objects.get_or_create(
-                codigo_barras=codigo, defaults={"nome": nome, "preco": Decimal(preco)}
+                codigo_barras=codigo,
+                defaults={"nome": nome, "preco": Decimal(preco), "restrito": restrito},
             )
             if criado and quantidade:
                 registrar_movimentacao(
