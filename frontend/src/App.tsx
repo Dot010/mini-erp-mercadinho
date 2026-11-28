@@ -8,6 +8,7 @@ import { Estoque } from "./pages/Estoque";
 import { Login } from "./pages/Login";
 import { Totem } from "./pages/Totem";
 import { Painel } from "./pages/Painel";
+import { Relatorios } from "./pages/Relatorios";
 
 function Inicio() {
   const { usuario, carregando } = useAuth();
@@ -22,21 +23,28 @@ export default function App() {
         <Topo />
         <Routes>
           <Route
-  path="/painel"
-  element={
-    <Protegida papeis={["dono"]}>
-      <Painel />
-    </Protegida>
-  }
-/>
+            path="/relatorios"
+            element={
+              <Protegida papeis={["dono"]}>
+                <Relatorios />
+              </Protegida>
+            }
+          />
           <Route
-          path="/totem"
-          element={
-            <Protegida papeis={["totem"]}>
-              <Totem/>
-
-            </Protegida>
-          }
+            path="/painel"
+            element={
+              <Protegida papeis={["dono"]}>
+                <Painel />
+              </Protegida>
+            }
+          />
+          <Route
+            path="/totem"
+            element={
+              <Protegida papeis={["totem"]}>
+                <Totem />
+              </Protegida>
+            }
           />
           <Route path="/login" element={<Login />} />
           <Route

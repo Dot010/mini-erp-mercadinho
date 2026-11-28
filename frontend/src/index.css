@@ -231,3 +231,7 @@ select {
 .barras li { display: grid; grid-template-columns: 160px 1fr 110px; align-items: center; gap: 12px; }
 .barras-trilho { height: 22px; background: var(--fundo); border-radius: 2px; overflow: hidden; }
 .barras-cheia { display: block; height: 100%; background: var(--etiqueta); }
+/* Relatórios */
+.relatorio-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.relatorio-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fraco); }
+.tabela .botao { min-height: 40px; }

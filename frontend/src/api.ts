@@ -47,3 +47,18 @@ export async function api<T>(
   if (!resposta.ok) throw new ErroApi(resposta.status, mensagemDoErro(resposta.status, corpo));
   return corpo as T;
 }
+
+export async function baixarArquivo(caminho: string, nome: string) {
+  const token = lerToken();
+  const resposta = await fetch(BASE + caminho, {
+    headers: token ? { Authorization: `Token ${token}` } : {},
+  });
+  if (!resposta.ok) throw new ErroApi(resposta.status, "Não foi possível baixar o arquivo.");
+
+  const arquivo = await resposta.blob();
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(arquivo);
+  link.download = nome;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}

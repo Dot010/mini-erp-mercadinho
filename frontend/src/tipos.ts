@@ -60,3 +60,14 @@ export const NOME_PAGAMENTO: Record<Pagamento, string> = {
   cartao: "Cartão",
   pix: "Pix",
 };
+
+
+export type Relatorio = {
+  id: number;
+  inicio: string;
+  fim: string;
+  status: "pendente" | "pronto" | "erro";
+  dados: Resumo | null;
+  criado_em: string;
+  terminado_em: string | null;
+};
