@@ -3,8 +3,10 @@ import { useAuth } from "../auth/contexto";
 import type { Papel } from "../tipos";
 
 const LINKS: { para: string; texto: string; papeis: Papel[] }[] = [
-  { para: "/caixa", texto: "Caixa", papeis: ["dono", "caixa"] },
+  { para: "/painel", texto: "Painel", papeis: ["dono"] },
+  { para: "/relatorios", texto: "Relatórios", papeis: ["dono"] },
   { para: "/estoque", texto: "Estoque", papeis: ["dono", "estoquista"] },
+  { para: "/caixa", texto: "Caixa", papeis: ["dono", "caixa"] },
 ];
 
 export function Topo() {

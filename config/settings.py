@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     "contas",
     "estoque",
     "vendas",
+    "relatorios",
 ]
 
 AUTH_USER_MODEL = "contas.Usuario"
@@ -111,3 +112,6 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
+
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0")
+CELERY_TIMEZONE = TIME_ZONE

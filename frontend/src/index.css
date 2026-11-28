@@ -221,3 +221,17 @@ select {
   .caixa-pagamento { border-left: 0; border-top: 1px solid var(--linha); }
   .etiqueta-valor { font-size: 44px; }
 }
+
+.painel h2 { margin: 12px 0 0; font-size: 18px; font-weight: 600; }
+.painel-cartoes { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.painel-cartoes .etiqueta-valor { font-size: 40px; }
+.painel-lista { list-style: none; margin: 0; padding: 0; max-width: 520px; }
+.painel-lista li { display: flex; justify-content: space-between; padding: 10px 0; border-top: 1px solid var(--linha-clara); }
+.barras { list-style: none; margin: 0; padding: 0; max-width: 720px; display: flex; flex-direction: column; gap: 10px; }
+.barras li { display: grid; grid-template-columns: 160px 1fr 110px; align-items: center; gap: 12px; }
+.barras-trilho { height: 22px; background: var(--fundo); border-radius: 2px; overflow: hidden; }
+.barras-cheia { display: block; height: 100%; background: var(--etiqueta); }
+/* Relatórios */
+.relatorio-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 12px; }
+.relatorio-form label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; color: var(--fraco); }
+.tabela .botao { min-height: 40px; }
