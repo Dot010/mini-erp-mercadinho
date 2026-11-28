@@ -9,11 +9,11 @@ Sistema de gestão para um mercadinho de bairro: produtos, estoque, vendas no ca
 | Papel | Pode fazer |
 |---|---|
 | **Dono** | tudo, mais o painel do dia, os relatórios por período e o download em CSV |
-| **Caixa** | vender, cancelar venda e liberar compras de produtos +18 no totem |
+| **Caixa** | vender, ver as próprias vendas e liberar compras de produtos +18 no totem |
 | **Estoquista** | cadastrar produtos e registrar entradas e saídas de estoque |
 | **Totem** | autoatendimento: o cliente passa os produtos e paga; produtos +18 pedem liberação de um funcionário |
 
-## Stack
+## Stack    
 - **Back-end:** Python, Django, Django REST Framework, PostgreSQL
 - **Tarefas em segundo plano:** Celery e Redis
 - **Front-end:** React, TypeScript, Vite
